@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Reviews</h1>
+<div class="feed">
+  {% for review in reviews %}
+  <div id="reviews">
+    <div class="review section shadow-1">
+      <div class="section-content review-content">
+        {{review.title}}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
