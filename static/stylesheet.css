@@ -171,7 +171,7 @@ img {
 }
 
 .form-group { /* each text entry is in a group */
-  margin: 15px 0;
+  margin: 15px 15px;
   position: relative;
   display: inline-block;
 }
