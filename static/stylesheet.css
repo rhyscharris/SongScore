@@ -37,7 +37,7 @@ body {
   width: 100%;
 }
 
-.section-content form {
+.inline-form {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -380,7 +380,7 @@ input:focus ~ .highlight {
 }
 
 @media screen and (max-width: 600px) {
-  .section-content form {
+  .inline-form {
     display: block;
   }
   .submit-right {
