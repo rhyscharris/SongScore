@@ -92,6 +92,10 @@ def login():
                 print("password matches!")
                 flash("password matches!!!!!! it works!!!!")
                 app.logger.info('PASSWORD MATCHES!')
+            else:
+                print("password does not match :(")
+                flash("password does not match :(")
+                app.logger.info('password does not match :(')
         else:
             print("no user")
             app.logger.info('NO USER FOUND!') #else, the result must be 0. No rows of data found.
