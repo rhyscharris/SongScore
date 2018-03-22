@@ -87,6 +87,7 @@ def login():
         else:
             print("no user")
             app.logger.info('NO USER FOUND!') #else, the result must be 0. No rows of data found.
+            flash("NO user found!!")
             return render_template('login.html')
             cur.close()
 
