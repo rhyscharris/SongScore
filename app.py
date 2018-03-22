@@ -13,7 +13,7 @@ app.database = "database.db"
 #app.config['MYSQL_USER'] = 'localhost'
 #app.config['MYSQL_PASSWORD'] = ''
 #app.config['MYSQL_DB'] = 'mysql'
-#app.config['MYSQL_CURSORCLASS'] = 'DictCursor' #makes it save as a dictionary instead of a tuple
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor' #makes it save as a dictionary instead of a tuple
 #init MYSQL
 #mysql = MySQL(app)
 
@@ -68,10 +68,7 @@ def login():
         #Creates the DictCursor
         c = sqlite3.connect('database.db')
         cur = c.cursor()
-        cur.execute("SELECT * FROM users WHERE username = (?)", [username])
-        result = cur.fetchall()
-        print("results: " + str(result))
-        print("results: " + str(result))
+        result = cur.execute("SELECT * FROM users WHERE username = ?", [username])
         print("results: " + str(result))
 
 
@@ -79,10 +76,21 @@ def login():
             print("at least one result found")
             print("at least one result found")
             data = cur.fetchone() #FETCHes the first ONE result that appears.
-            password = data['password']
+            print("data: " + str(data))
+            print("data: " + str(data))
+            print("data: " + str(data))
+            print("data: " + str(data))
+
+            password = data[4]
+            print("password: " + str(password))
+            print("password candidate: " + str(password_candidate))
+
+
             cur.close()
 
             if sha256_crypt.verify(password_candidate, password):#pass the password entered and the actual password found into the statement
+                print("password matches!")
+                flash("password matches!!!!!! it works!!!!")
                 app.logger.info('PASSWORD MATCHES!')
         else:
             print("no user")
