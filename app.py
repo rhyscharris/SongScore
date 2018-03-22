@@ -41,21 +41,56 @@ class RegisterForm(Form):
 def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate(): #need to make sure the request is post, and that it matches the validation
-            name = form.name.data #if the user is submitting, make the name variable equal the name they input
-            email = form.email.data
-            username = form.username.data
-            password = sha256_crypt.encrypt(str(form.password.data)) #encrypts the password before it's submitted.
+        name = form.name.data #if the user is submitting, make the name variable equal the name they input
+        email = form.email.data
+        username = form.username.data
+        password = sha256_crypt.encrypt(str(form.password.data)) #encrypts the password before it's submitted.
 
-            #Creates the DictCursor
-            g.db = connect_db()
-            g.db.execute("INSERT INTO users(name, email, username, password) VALUES(?, ?, ?, ?)", (name, email, username, password))
-            g.db.commit()
-            g.db.close()
+        #Creates the DictCursor
+        g.db = connect_db()
+        g.db.execute("INSERT INTO users(name, email, username, password) VALUES(?, ?, ?, ?)", (name, email, username, password))
+        g.db.commit()
+        g.db.close()
 
-            flash('You are now registered and can log in', 'success')
-            redirect(url_for('index'))
+        flash('You are now registered and can log in', 'success') #format this for a good message
+        redirect(url_for('login'))
 
     return render_template('register.html', form=form) #if not a POST, it must be a get. Serve the form.
+
+    #Logging in
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':#if they submit some data, catch it from the form
+        #Not using WTForms cos there's no point
+        username = request.form['username']
+        password_candidate = request.form['password']#candidate means taking what they put into the login page and comparing it. It may or may not match
+
+        #Creates the DictCursor
+        c = sqlite3.connect('database.db')
+        cur = c.cursor()
+        cur.execute("SELECT * FROM users WHERE username = (?)", [username])
+        result = cur.fetchall()
+        print("results: " + str(result))
+        print("results: " + str(result))
+        print("results: " + str(result))
+
+
+        if result: #as long as some rows are found in the table
+            print("at least one result found")
+            print("at least one result found")
+            data = cur.fetchone() #FETCHes the first ONE result that appears.
+            password = data['password']
+            cur.close()
+
+            if sha256_crypt.verify(password_candidate, password):#pass the password entered and the actual password found into the statement
+                app.logger.info('PASSWORD MATCHES!')
+        else:
+            print("no user")
+            app.logger.info('NO USER FOUND!') #else, the result must be 0. No rows of data found.
+            return render_template('login.html')
+            cur.close()
+
+    return render_template('login.html')#else, they're not submitting anything. Redirect to login page.
 
 if __name__ == '__main__': #if the right application is being run...
     app.run(debug = True) #run it. debut means you don't have to reload the server for every change
