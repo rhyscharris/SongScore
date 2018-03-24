@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+{% if session.logged_in %}
 <div class="section shadow-1">
 	<div class="section-content">
 		<h2 class="capital">Write a review</h2>
@@ -42,5 +43,12 @@
   </div>
   {% endfor %}
 </div>
+{% else %}
+<div class="section shadow-1">
+	<div class="section-content">
+		<h2 class="capital">Please register or log in to access SongScore</h2>
+	</div>
+</div>
+{% endif %}
 
 {% endblock %}
