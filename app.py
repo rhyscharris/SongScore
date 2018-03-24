@@ -74,36 +74,36 @@ def login():
 
         if result: #as long as some rows are found in the table
             print("at least one result found")
-            print("at least one result found")
             data = cur.fetchone() #FETCHes the first ONE result that appears.
-            print("data: " + str(data))
-            print("data: " + str(data))
-            print("data: " + str(data))
             print("data: " + str(data))
 
             password = data[4]
             print("password: " + str(password))
             print("password candidate: " + str(password_candidate))
 
-
-            cur.close()
-
             if sha256_crypt.verify(password_candidate, password):#pass the password entered and the actual password found into the statement
-                print("password matches!")
-                flash("password matches!!!!!! it works!!!!")
-                app.logger.info('PASSWORD MATCHES!')
+                session['logged_in'] = True
+                session['username'] = username
+
+                flash('You will hopefully now be logged in (no promises lol)', 'success')
+                return redirect(url_for('index'))
             else:
-                print("password does not match :(")
-                flash("password does not match :(")
-                app.logger.info('password does not match :(')
+                error = 'Password does not match'
+                return render_template('login.html', error = error)
+
         else:
-            print("no user")
-            app.logger.info('NO USER FOUND!') #else, the result must be 0. No rows of data found.
-            flash("NO user found!!")
-            return render_template('login.html')
-            cur.close()
+            error = 'Username does not exist'
+            return render_template('login.html', error = error)
+        cur.close()
 
     return render_template('login.html')#else, they're not submitting anything. Redirect to login page.
+
+# Logout
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('You are now logged out', 'success')
+    return redirect(url_for('login'))
 
 if __name__ == '__main__': #if the right application is being run...
     app.run(debug = True) #run it. debut means you don't have to reload the server for every change

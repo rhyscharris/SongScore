@@ -1,4 +1,4 @@
-<!--This is how the flask flash messages will display (ONCE I CAN BE BOTHERED TO FORMAT!!!)<!-->
+<!--This is how the flask flash messages will display if redirected to a link (ONCE I CAN BE BOTHERED TO FORMAT!!!)<!-->
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
@@ -6,3 +6,12 @@
     {% endfor %}
   {% endif %}
 {% endwith %}
+
+<!--If we just need to display a specific type of message in the same page (ONCE I CAN BE BOTHERED TO FORMAT!!!)<!-->
+{% if error %}
+  <div class = "alert alert-danger">{{error}}</div>
+{% endif %}
+
+{% if msg %}
+  <div class = "alert alert-success"> {{erorr}}</div>
+{% endif %}
