@@ -3,6 +3,7 @@ from data import Reviews #from data.py, import the Reviews function
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 import sqlite3
+from functools import wraps
 
 app = Flask(__name__) #creates an instance of flask
 app.secret_key = "secret"
@@ -88,7 +89,7 @@ def login():
                 flash('You will hopefully now be logged in (no promises lol)', 'success')
                 return redirect(url_for('index'))
             else:
-                error = 'Password does not match'
+                error = 'Password is incorrect'
                 return render_template('login.html', error = error)
 
         else:
@@ -98,12 +99,29 @@ def login():
 
     return render_template('login.html')#else, they're not submitting anything. Redirect to login page.
 
+# Check if user logged in so they can't access pages they shouldn't.
+# Make a page so you need to be logged in by adding "@is_logged_in" after the @app.route
+def is_logged_in(f):
+    @wraps(f) #pass in 'f'
+    def wrap(*args, **kwargs): #idk what this means tbh
+        if 'logged_in' in session: #check they're logged into a session
+            return f(*args, **kwargs)
+        else:
+            flash('Yo you dont have access for this get outta here', 'danger') #danger type of alert
+            return redirect(url_for('login')) #prompt them to log in
+    return wrap
+
 # Logout
 @app.route('/logout')
 def logout():
     session.clear()
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
+
+@app.route('/profile') #points flask to the index so it can load files
+@is_logged_in #makes it so they must be logged in to view it.
+def profile():
+    return render_template('profile.html')
 
 if __name__ == '__main__': #if the right application is being run...
     app.run(debug = True) #run it. debut means you don't have to reload the server for every change
